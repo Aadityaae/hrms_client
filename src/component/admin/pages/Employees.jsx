@@ -1,7 +1,8 @@
-        import React, { useState } from "react";
+import React, { useState } from "react";
 
 const Employees = () => {
-  const [showForm, setShowForm] =
+  const [showForm, setShowForm] = useState(false);
+  const [isEditing, setIsEditing] =
     useState(false);
 
   const [employees, setEmployees] =
@@ -15,7 +16,7 @@ const Employees = () => {
       {
         id: "EMP002",
         name: "Priya Verma",
-        role: "HR Manager", 
+        role: "HR Manager",
         status: "Active",
       },
     ]);
@@ -50,10 +51,23 @@ const Employees = () => {
       return;
     }
 
-    setEmployees((prev) => [
-      ...prev,
-      form,
-    ]);
+    if (isEditing) {
+      setEmployees((prev) =>
+        prev.map((emp) =>
+          emp.id === form.id
+            ? form
+            : emp
+        )
+      );
+
+      setIsEditing(false);
+
+    } else {
+      setEmployees((prev) => [
+        ...prev,
+        form,
+      ]);
+    }
 
     setForm({
       id: "",
@@ -77,20 +91,24 @@ const Employees = () => {
   const viewEmployee = (
     employee
   ) => {
-    alert(
-      `
+    alert(`
 ID: ${employee.id}
 Name: ${employee.name}
 Role: ${employee.role}
 Status: ${employee.status}
-`
-    );
+`);
+  };
+
+  const editEmployee = (
+    employee
+  ) => {
+    setForm(employee);
+    setShowForm(true);
+    setIsEditing(true);
   };
 
   return (
     <div className="space-y-6">
-
-      {/* Header */}
 
       <div className="flex items-center justify-between">
 
@@ -109,9 +127,17 @@ Status: ${employee.status}
         </div>
 
         <button
-          onClick={() =>
-            setShowForm(true)
-          }
+          onClick={() => {
+            setShowForm(true);
+            setIsEditing(false);
+
+            setForm({
+              id: "",
+              name: "",
+              role: "",
+              status: "Active",
+            });
+          }}
           className="rounded-2xl bg-sky-600 px-6 py-3 text-white"
         >
           + Add Employee
@@ -119,14 +145,16 @@ Status: ${employee.status}
 
       </div>
 
-      {/* FORM */}
-
       {showForm && (
 
         <div className="rounded-3xl bg-white p-6 shadow">
 
           <h2 className="mb-5 text-2xl font-bold">
-            Add Employee
+
+            {isEditing
+              ? "Edit Employee"
+              : "Add Employee"}
+
           </h2>
 
           <form
@@ -141,6 +169,9 @@ Status: ${employee.status}
               value={form.id}
               onChange={
                 handleChange
+              }
+              disabled={
+                isEditing
               }
               placeholder="Employee ID"
               className="rounded-xl border p-3"
@@ -176,7 +207,6 @@ Status: ${employee.status}
               }
               className="rounded-xl border p-3"
             >
-
               <option>
                 Active
               </option>
@@ -192,16 +222,30 @@ Status: ${employee.status}
               <button
                 className="rounded-xl bg-green-600 px-5 py-3 text-white"
               >
-                Save
+                {isEditing
+                  ? "Update"
+                  : "Save"}
               </button>
 
               <button
                 type="button"
-                onClick={() =>
+                onClick={() => {
                   setShowForm(
                     false
-                  )
-                }
+                  );
+
+                  setIsEditing(
+                    false
+                  );
+
+                  setForm({
+                    id: "",
+                    name: "",
+                    role: "",
+                    status:
+                      "Active",
+                  });
+                }}
                 className="rounded-xl bg-red-500 px-5 py-3 text-white"
               >
                 Cancel
@@ -214,8 +258,6 @@ Status: ${employee.status}
         </div>
 
       )}
-
-      {/* CARD */}
 
       <div className="rounded-3xl bg-white shadow">
 
@@ -314,6 +356,11 @@ Status: ${employee.status}
                         </button>
 
                         <button
+                          onClick={() =>
+                            editEmployee(
+                              emp
+                            )
+                          }
                           className="rounded-lg bg-yellow-500 px-3 py-2 text-white"
                         >
                           Edit
