@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 
 const Employees = () => {
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] =
+    useState(false);
+
   const [isEditing, setIsEditing] =
     useState(false);
 
@@ -21,17 +23,27 @@ const Employees = () => {
       },
     ]);
 
-  const [form, setForm] =
-    useState({
-      id: "",
-      name: "",
-      role: "",
-      status: "Active",
-    });
+  const getDefaultEmployee = () => ({
+    id: `EMP${String(
+      employees.length + 1
+    ).padStart(3, "0")}`,
+    name: "New Employee",
+    role: "Employee",
+    status: "Active",
+  });
 
-  const handleChange = (e) => {
-    const { name, value } =
-      e.target;
+  const [form, setForm] =
+    useState(
+      getDefaultEmployee()
+    );
+
+  const handleChange = (
+    e
+  ) => {
+    const {
+      name,
+      value,
+    } = e.target;
 
     setForm((prev) => ({
       ...prev,
@@ -39,7 +51,9 @@ const Employees = () => {
     }));
   };
 
-  const addEmployee = (e) => {
+  const addEmployee = (
+    e
+  ) => {
     e.preventDefault();
 
     if (
@@ -47,43 +61,51 @@ const Employees = () => {
       !form.name ||
       !form.role
     ) {
-      alert("Fill all fields");
+      alert(
+        "Fill all fields"
+      );
       return;
     }
 
     if (isEditing) {
-      setEmployees((prev) =>
-        prev.map((emp) =>
-          emp.id === form.id
-            ? form
-            : emp
-        )
+      setEmployees(
+        (prev) =>
+          prev.map(
+            (emp) =>
+              emp.id ===
+              form.id
+                ? form
+                : emp
+          )
       );
 
-      setIsEditing(false);
-
+      setIsEditing(
+        false
+      );
     } else {
-      setEmployees((prev) => [
-        ...prev,
-        form,
-      ]);
+      setEmployees(
+        (prev) => [
+          ...prev,
+          form,
+        ]
+      );
     }
 
-    setForm({
-      id: "",
-      name: "",
-      role: "",
-      status: "Active",
-    });
+    setForm(
+      getDefaultEmployee()
+    );
 
     setShowForm(false);
   };
 
-  const deleteEmployee = (id) => {
+  const deleteEmployee = (
+    id
+  ) => {
     setEmployees(
       employees.filter(
         (emp) =>
-          emp.id !== id
+          emp.id !==
+          id
       )
     );
   };
@@ -103,9 +125,30 @@ Status: ${employee.status}
     employee
   ) => {
     setForm(employee);
-    setShowForm(true);
-    setIsEditing(true);
+
+    setShowForm(
+      true
+    );
+
+    setIsEditing(
+      true
+    );
   };
+
+  const openAddForm =
+    () => {
+      setForm(
+        getDefaultEmployee()
+      );
+
+      setShowForm(
+        true
+      );
+
+      setIsEditing(
+        false
+      );
+    };
 
   return (
     <div className="space-y-6">
@@ -121,23 +164,17 @@ Status: ${employee.status}
           <p className="mt-2 text-slate-500">
             Total Employees:
             {" "}
-            {employees.length}
+            {
+              employees.length
+            }
           </p>
 
         </div>
 
         <button
-          onClick={() => {
-            setShowForm(true);
-            setIsEditing(false);
-
-            setForm({
-              id: "",
-              name: "",
-              role: "",
-              status: "Active",
-            });
-          }}
+          onClick={
+            openAddForm
+          }
           className="rounded-2xl bg-sky-600 px-6 py-3 text-white"
         >
           + Add Employee
@@ -166,34 +203,37 @@ Status: ${employee.status}
 
             <input
               name="id"
-              value={form.id}
-              onChange={
-                handleChange
+              value={
+                form.id
               }
               disabled={
                 isEditing
               }
-              placeholder="Employee ID"
+              onChange={
+                handleChange
+              }
               className="rounded-xl border p-3"
             />
 
             <input
               name="name"
-              value={form.name}
+              value={
+                form.name
+              }
               onChange={
                 handleChange
               }
-              placeholder="Employee Name"
               className="rounded-xl border p-3"
             />
 
             <input
               name="role"
-              value={form.role}
+              value={
+                form.role
+              }
               onChange={
                 handleChange
               }
-              placeholder="Position"
               className="rounded-xl border p-3"
             />
 
@@ -207,6 +247,7 @@ Status: ${employee.status}
               }
               className="rounded-xl border p-3"
             >
+
               <option>
                 Active
               </option>
@@ -238,13 +279,9 @@ Status: ${employee.status}
                     false
                   );
 
-                  setForm({
-                    id: "",
-                    name: "",
-                    role: "",
-                    status:
-                      "Active",
-                  });
+                  setForm(
+                    getDefaultEmployee()
+                  );
                 }}
                 className="rounded-xl bg-red-500 px-5 py-3 text-white"
               >
@@ -277,19 +314,19 @@ Status: ${employee.status}
 
               <tr className="bg-slate-50">
 
-                <th className="p-5 text-left">
+                <th className="p-5">
                   ID
                 </th>
 
-                <th className="p-5 text-left">
+                <th className="p-5">
                   Employee
                 </th>
 
-                <th className="p-5 text-left">
+                <th className="p-5">
                   Role
                 </th>
 
-                <th className="p-5 text-left">
+                <th className="p-5">
                   Status
                 </th>
 
@@ -304,23 +341,33 @@ Status: ${employee.status}
             <tbody>
 
               {employees.map(
-                (emp) => (
+                (
+                  emp
+                ) => (
 
                   <tr
-                    key={emp.id}
-                    className="border-t hover:bg-slate-50"
+                    key={
+                      emp.id
+                    }
+                    className="border-t"
                   >
 
                     <td className="p-5">
-                      {emp.id}
+                      {
+                        emp.id
+                      }
                     </td>
 
                     <td className="p-5">
-                      {emp.name}
+                      {
+                        emp.name
+                      }
                     </td>
 
                     <td className="p-5">
-                      {emp.role}
+                      {
+                        emp.role
+                      }
                     </td>
 
                     <td className="p-5">
